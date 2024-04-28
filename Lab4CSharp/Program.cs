@@ -11,19 +11,31 @@ namespace Lab4CSharp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Lab4 C# ");
-            AnyFunc();
+            
+           
 
-            Console.WriteLine("Problems 1 ");
-            AnyFunc();
+            // Приклад створення об'єктів класу VectorInt
+            Console.WriteLine("Exercise 2 ");
+            VectorInt vec1 = new VectorInt(3, 5); // Vector of size 3 initialized with value 5
+            VectorInt vec2 = new VectorInt(3); // Vector of size 3 initialized with zeros
+            vec2.Input(); // Input values for vec2 from user
 
-            //  приклад класів
-            UserClass cl = new UserClass(" UserClass top-level ");
-            Lab4CSharp.UserClass cl2 = new Lab4CSharp.UserClass(" UserClass namespace Lab4CSharp ");
-            Console.WriteLine(cl + "   " + cl2 + "   ");
+            Console.WriteLine("Vector 1: ");
+            vec1.Output();
+            Console.WriteLine("Vector 2: ");
+            vec2.Output();
 
-            // Вправа 2
-            // Створення масиву об'єктів базового класу Person
+            VectorInt vec3 = vec1 + vec2; // Adding two vectors
+            Console.WriteLine("Vector 3 (Sum): ");
+            vec3.Output();
+
+            ++vec1; // Increment all elements of vec1
+            Console.WriteLine("Vector 1 after increment: ");
+            vec1.Output();
+
+            Console.WriteLine("Number of vectors created: " + VectorInt.GetNumVec());
+
+            // Приклад класів Person, Student, Teacher, DepartmentHead
             Person[] people = new Person[]
             {
                 new Student { Name = "John", Age = 20, StudentID = "S12345", Major = "Computer Science" },
@@ -34,7 +46,6 @@ namespace Lab4CSharp
                 new DepartmentHead { Name = "Dr. White", Age = 55, Department = "Mathematics", Subject = "Mathematics", YearsOfExperience = 25 }
             };
 
-            // Виведення масиву впорядкованого за віком
             Console.WriteLine("People sorted by age:");
             Array.Sort(people, (x, y) => x.Age.CompareTo(y.Age));
             foreach (var person in people)
@@ -112,6 +123,142 @@ namespace Lab4CSharp
         public override void Show()
         {
             Console.WriteLine($"Name: {Name}, Age: {Age}, Department: {Department}, Subject: {Subject}, Years of Experience: {YearsOfExperience}");
+        }
+    }
+
+    // Клас VectorInt з операціями векторних обчислень
+    class VectorInt
+    {
+        private int[] IntArray; // масив
+        private uint size; // розмір вектора
+        private int codeError; // код помилки
+        private static uint num_vec; // кількість векторів
+
+        // Конструктори
+        public VectorInt()
+        {
+            size = 1;
+            IntArray = new int[size];
+            IntArray[0] = 0;
+            codeError = 0;
+            num_vec++;
+        }
+
+        public VectorInt(uint s)
+        {
+            size = s;
+            IntArray = new int[size];
+            for (uint i = 0; i < size; ++i)
+            {
+                IntArray[i] = 0;
+            }
+            codeError = 0;
+            num_vec++;
+        }
+
+        public VectorInt(uint s, int init_value)
+        {
+            size = s;
+            IntArray = new int[size];
+            for (uint i = 0; i < size; ++i)
+            {
+                IntArray[i] = init_value;
+            }
+            codeError = 0;
+            num_vec++;
+        }
+
+        // Деструктор
+        ~VectorInt()
+        {
+            num_vec--;
+        }
+
+        // Методи
+        public void Input()
+        {
+            for (uint i = 0; i < size; ++i)
+            {
+                Console.WriteLine("Enter element " + i + ": ");
+                IntArray[i] = Convert.ToInt32(Console.ReadLine());
+            }
+        }
+
+        public void Output()
+        {
+            for (uint i = 0; i < size; ++i)
+            {
+                Console.Write(IntArray[i] + " ");
+            }
+            Console.WriteLine();
+        }
+
+        public void Assign(int value)
+        {
+            for (uint i = 0; i < size; ++i)
+            {
+                IntArray[i] = value;
+            }
+        }
+
+        public static uint GetNumVec()
+        {
+            return num_vec;
+        }
+
+        // Властивості
+        public uint Size
+        {
+            get { return size; }
+        }
+
+        public int CodeError
+        {
+            get { return codeError; }
+            set { codeError = value; }
+        }
+
+        // Індексатор
+        public int this[uint index]
+        {
+            get
+            {
+                if (index >= size)
+                {
+                    codeError = -1;
+                    return IntArray[0];
+                }
+                return IntArray[index];
+            }
+            set
+            {
+                if (index < size)
+                {
+                    IntArray[index] = value;
+                }
+            }
+        }
+
+        // Перевантаження унарних операцій
+        public static VectorInt operator ++(VectorInt vec)
+        {
+            for (uint i = 0; i < vec.size; ++i)
+            {
+                ++vec.IntArray[i];
+            }
+            return vec;
+        }
+
+        // Перевантаження бінарних операцій
+        public static VectorInt operator +(VectorInt vec1, VectorInt vec2)
+        {
+            uint newSize = (vec1.size > vec2.size) ? vec1.size : vec2.size;
+            VectorInt result = new VectorInt(newSize);
+            for (uint i = 0; i < newSize; ++i)
+            {
+                result.IntArray[i] = vec1[i] + vec2[i];
+            }
+            return result;
         }
     }
 }
