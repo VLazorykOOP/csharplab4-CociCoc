@@ -11,10 +11,6 @@ namespace Lab4CSharp
     {
         static void Main(string[] args)
         {
-            
-           
-
-            // Приклад створення об'єктів класу VectorInt
             Console.WriteLine("Exercise 2 ");
             VectorInt vec1 = new VectorInt(3, 5); // Vector of size 3 initialized with value 5
             VectorInt vec2 = new VectorInt(3); // Vector of size 3 initialized with zeros
@@ -35,7 +31,7 @@ namespace Lab4CSharp
 
             Console.WriteLine("Number of vectors created: " + VectorInt.GetNumVec());
 
-            // Приклад класів Person, Student, Teacher, DepartmentHead
+            // Example of classes Person, Student, Teacher, DepartmentHead
             Person[] people = new Person[]
             {
                 new Student { Name = "John", Age = 20, StudentID = "S12345", Major = "Computer Science" },
@@ -46,95 +42,44 @@ namespace Lab4CSharp
                 new DepartmentHead { Name = "Dr. White", Age = 55, Department = "Mathematics", Subject = "Mathematics", YearsOfExperience = 25 }
             };
 
+            Console.WriteLine("Exercise 1:");
             Console.WriteLine("People sorted by age:");
             Array.Sort(people, (x, y) => x.Age.CompareTo(y.Age));
             foreach (var person in people)
             {
                 person.Show();
             }
-        }
 
-        /// <summary>
-        /// 
-        ///  Top-level statements must precede namespace and type declarations.
-        /// At the top-level methods/functions can be defined and used
-        /// На верхньому рівні можна визначати та використовувати методи/функції
-        /// </summary>
-        static void AnyFunc()
-        {
-            Console.WriteLine(" Some function in top-level");
+            // Exercise 3: MatrixInt object
+            Console.Write("Enter number of rows: ");
+            int rows = Convert.ToInt32(Console.ReadLine());
+
+            Console.Write("Enter number of columns: ");
+            int cols = Convert.ToInt32(Console.ReadLine());
+
+            MatrixInt mat1 = new MatrixInt(rows, cols);
+            Console.WriteLine($"MatrixInt object created with {rows}x{cols} dimensions.");
+            mat1.InputValues();
+
+            Console.WriteLine($"Number of matrices created: {MatrixInt.CountMatrices()}");
+
+            Console.WriteLine("Printing matrix elements:");
+            mat1.PrintValues();
         }
     }
 
     /// <summary>
-    /// 
-    /// Top-level statements must precede namespace and type declarations.
-    /// Оператори верхнього рівня мають передувати оголошенням простору імен і типу.
-    /// Створення класу(ів) або оголошенням простору імен є закіченням  іструкцій верхнього рівня
-    /// 
+    /// VectorInt class with vector operations
+    /// Клас VectorInt з операціями векторних обчислень
     /// </summary>
-    class UserClass
-    {
-        public string UserName { get; set; }
-
-        public UserClass(string userName)
-        {
-            UserName = userName;
-        }
-    }
-
-    internal class Person
-    {
-        public string Name { get; set; } = string.Empty; // Initialize to avoid null reference
-        public int Age { get; set; }
-
-        public virtual void Show()
-        {
-            Console.WriteLine($"Name: {Name}, Age: {Age}");
-        }
-    }
-
-    internal class Student : Person
-    {
-        public string StudentID { get; set; } = string.Empty; // Initialize to avoid null reference
-        public string Major { get; set; } = string.Empty; // Initialize to avoid null reference
-
-        public override void Show()
-        {
-            Console.WriteLine($"Name: {Name}, Age: {Age}, Student ID: {StudentID}, Major: {Major}");
-        }
-    }
-
-    internal class Teacher : Person
-    {
-        public string Department { get; set; } = string.Empty; // Initialize to avoid null reference
-        public string Subject { get; set; } = string.Empty; // Initialize to avoid null reference
-
-        public override void Show()
-        {
-            Console.WriteLine($"Name: {Name}, Age: {Age}, Department: {Department}, Subject: {Subject}");
-        }
-    }
-
-    internal class DepartmentHead : Teacher
-    {
-        public int YearsOfExperience { get; set; }
-
-        public override void Show()
-        {
-            Console.WriteLine($"Name: {Name}, Age: {Age}, Department: {Department}, Subject: {Subject}, Years of Experience: {YearsOfExperience}");
-        }
-    }
-
-    // Клас VectorInt з операціями векторних обчислень
     class VectorInt
     {
-        private int[] IntArray; // масив
-        private uint size; // розмір вектора
-        private int codeError; // код помилки
-        private static uint num_vec; // кількість векторів
+        private int[] IntArray; // array
+        private uint size; // vector size
+        private int codeError; // error code
+        private static uint num_vec; // number of vectors
 
-        // Конструктори
+        // Constructors
         public VectorInt()
         {
             size = 1;
@@ -168,13 +113,7 @@ namespace Lab4CSharp
             num_vec++;
         }
 
-        // Деструктор
-        ~VectorInt()
-        {
-            num_vec--;
-        }
-
-        // Методи
+        // Methods
         public void Input()
         {
             for (uint i = 0; i < size; ++i)
@@ -206,7 +145,7 @@ namespace Lab4CSharp
             return num_vec;
         }
 
-        // Властивості
+        // Properties
         public uint Size
         {
             get { return size; }
@@ -218,7 +157,7 @@ namespace Lab4CSharp
             set { codeError = value; }
         }
 
-        // Індексатор
+        // Indexer
         public int this[uint index]
         {
             get
@@ -239,7 +178,7 @@ namespace Lab4CSharp
             }
         }
 
-        // Перевантаження унарних операцій
+        // Unary operator overloading
         public static VectorInt operator ++(VectorInt vec)
         {
             for (uint i = 0; i < vec.size; ++i)
@@ -249,7 +188,7 @@ namespace Lab4CSharp
             return vec;
         }
 
-        // Перевантаження бінарних операцій
+        // Binary operator overloading
         public static VectorInt operator +(VectorInt vec1, VectorInt vec2)
         {
             uint newSize = (vec1.size > vec2.size) ? vec1.size : vec2.size;
@@ -259,6 +198,232 @@ namespace Lab4CSharp
                 result.IntArray[i] = vec1[i] + vec2[i];
             }
             return result;
+        }
+    }
+
+    /// <summary>
+    /// MatrixInt class representing a matrix
+    /// Клас MatrixInt, який представляє матрицю
+    /// </summary>
+    class MatrixInt
+    {
+        private int[,] IntArray; // array
+        private int n, m; // matrix dimensions
+        private int codeError; // error code
+        private static int num_vec; // number of matrices
+
+        // Constructors
+        public MatrixInt()
+        {
+            n = 1;
+            m = 1;
+            IntArray = new int[n, m];
+            num_vec++;
+        }
+
+        public MatrixInt(int rows, int cols)
+        {
+            n = rows;
+            m = cols;
+            IntArray = new int[n, m];
+            num_vec++;
+        }
+
+        public MatrixInt(int rows, int cols, int initValue)
+        {
+            n = rows;
+            m = cols;
+            IntArray = new int[n, m];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    IntArray[i, j] = initValue;
+                }
+            }
+            num_vec++;
+        }
+
+        // Methods
+        public void InputValues()
+        {
+            Console.WriteLine($"Enter {n}x{m} matrix elements:");
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    Console.Write($"Array[{i},{j}]: ");
+                    IntArray[i, j] = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+        }
+
+        public void PrintValues()
+        {
+            Console.WriteLine("Printing matrix elements:");
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    Console.Write($"{IntArray[i, j]}\t");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public static int CountMatrices()
+        {
+            return num_vec;
+        }
+
+        // Properties
+        public int Rows => n;
+        public int Columns => m;
+
+        public int CodeError
+        {
+            get { return codeError; }
+            set { codeError = value; }
+        }
+
+        // Indexers
+        public int this[int i, int j]
+        {
+            get
+            {
+                if (i >= 0 && i < n && j >= 0 && j < m)
+                    return IntArray[i, j];
+                else
+                {
+                    codeError = -1;
+                    return 0;
+                }
+            }
+            set
+            {
+                if (i >= 0 && i < n && j >= 0 && j < m)
+                    IntArray[i, j] = value;
+                else
+                    codeError = -1;
+            }
+        }
+
+        public int this[int k]
+        {
+            get
+            {
+                if (k >= 0 && k < n * m)
+                {
+                    int i = k / m;
+                    int j = k % m;
+                    return IntArray[i, j];
+                }
+                else
+                {
+                    codeError = -1;
+                    return 0;
+                }
+            }
+            set
+            {
+                if (k >= 0 && k < n * m)
+                {
+                    int i = k / m;
+                    int j = k % m;
+                    IntArray[i, j] = value;
+                }
+                else
+                    codeError = -1;
+            }
+        }
+
+        // Operator overloading
+        public static MatrixInt operator ++(MatrixInt matrix)
+        {
+            for (int i = 0; i < matrix.n; i++)
+            {
+                for (int j = 0; j < matrix.m; j++)
+                {
+                    matrix.IntArray[i, j]++;
+                }
+            }
+            return matrix;
+        }
+
+        public static bool operator true(MatrixInt matrix)
+        {
+            if (matrix.n != 0 && matrix.m != 0)
+            {
+                for (int i = 0; i < matrix.n; i++)
+                {
+                    for (int j = 0; j < matrix.m; j++)
+                    {
+                        if (matrix.IntArray[i, j] == 0)
+                            return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public static bool operator false(MatrixInt matrix)
+        {
+            return matrix.n != 0 && matrix.m != 0;
+        }
+
+        public static MatrixInt operator !(MatrixInt matrix)
+        {
+            return new MatrixInt(matrix.n, matrix.m, 1);
+        }
+
+        // Other overloads and operations as needed
+    }
+
+    // Define Person, Student, Teacher, and DepartmentHead classes
+    class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+
+        public virtual void Show()
+        {
+            Console.WriteLine($"Name: {Name}, Age: {Age}");
+        }
+    }
+
+    class Student : Person
+    {
+        public string StudentID { get; set; }
+        public string Major { get; set; }
+
+        public override void Show()
+        {
+            base.Show();
+            Console.WriteLine($"StudentID: {StudentID}, Major: {Major}");
+        }
+    }
+
+    class Teacher : Person
+    {
+        public string Department { get; set; }
+        public string Subject { get; set; }
+
+        public override void Show()
+        {
+            base.Show();
+            Console.WriteLine($"Department: {Department}, Subject: {Subject}");
+        }
+    }
+
+    class DepartmentHead : Teacher
+    {
+        public int YearsOfExperience { get; set; }
+
+        public override void Show()
+        {
+            base.Show();
+            Console.WriteLine($"Years of Experience: {YearsOfExperience}");
         }
     }
 }
